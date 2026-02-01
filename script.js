@@ -1,5 +1,5 @@
 const DB_MATERIALES = {
-  PLA: 0.06,
+  PLA: 0.022,
   PETG: 0.07,
   TPU: 0.1,
   SEDA: 0.09,
