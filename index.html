@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora 3D Pro | Proyección Logística</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <section class="input-section">
+        <h1>Calculadora 3D Pro</h1>
+        <p>
+          Calcula el presupuesto exacto para tus impresiones con márgenes
+          realistas y comisiones web.
+        </p>
+
+        <div class="form-group">
+          <label for="gramos">Peso Total (incluyendo soportes)</label>
+          <div class="input-wrapper">
+            <input type="number" id="gramos" value="10" min="1" step="0.1" />
+            <span class="unit">gramos</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="horas">Tiempo Estimado (Slicer)</label>
+          <div class="input-wrapper">
+            <input type="number" id="horas" value="1.5" min="0.1" step="0.1" />
+            <span class="unit">horas</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="material">Tipo de Material</label>
+          <select id="material">
+            <option value="PLA">PLA Estándar (0.06€/g)</option>
+            <option value="PETG">PETG (0.07€/g)</option>
+            <option value="TPU">TPU Flexible (0.10€/g)</option>
+            <option value="SEDA">Seda / Especial (0.09€/g)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Complejidad / Riesgo</label>
+          <div class="toggle-group">
+            <span id="complejidad-label">Pieza Estándar</span>
+            <label class="switch">
+              <input type="checkbox" id="esComplejo" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="costeDiseno">Coste Adicional Diseño / Modelado</label>
+          <div class="input-wrapper">
+            <input type="number" id="costeDiseno" value="0" min="0" step="1" />
+            <span class="unit">€</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="results-section">
+        <div class="price-main">
+          <span class="label">Precio Sugerido Final</span>
+          <span class="value" id="precioFinal">0.00€</span>
+        </div>
+
+        <div class="desglose">
+          <div class="desglose-item">
+            <span class="label">Coste de Producción</span>
+            <span class="val" id="costeProduccion">0.00€</span>
+          </div>
+          <div class="desglose-item">
+            <span class="label">Material</span>
+            <span class="val" id="desgloseMaterial">0.00€</span>
+          </div>
+          <div class="desglose-item">
+            <span class="label">Energía y Desgaste</span>
+            <span class="val" id="desgloseMaquina">0.00€</span>
+          </div>
+          <div class="desglose-item">
+            <span class="label">Comisión Web (10%)</span>
+            <span class="val" id="comisionWeb">0.00€</span>
+          </div>
+          <div class="desglose-item margin">
+            <span class="label">Margen Bruto Estimado</span>
+            <span class="val" id="margenBruto">0.00€</span>
+          </div>
+        </div>
+
+        <div class="footer-info">
+          * Cálculos basados en 1.5x de margen sobre coste de producción con
+          factor de riesgo aplicado.
+        </div>
+      </section>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
