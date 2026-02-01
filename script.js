@@ -6,10 +6,10 @@ const DB_MATERIALES = {
 };
 
 const CONFIG = {
-  setup: 3.5,
-  comisionWeb: 0.1,
-  margenBeneficio: 0.5, // 50% de margen (multiplicador 1.5)
-  costeHora: 0.15, // Luz + amortización (basado en el segundo ejemplo)
+    setup: 3.50,
+    comisionWeb: 0.10,
+    margenBeneficio: 0.30, // 30% de margen (multiplicador 1.3)
+    costeHora: 0.15       // Luz + amortización (basado en el segundo ejemplo)
 };
 
 /**
