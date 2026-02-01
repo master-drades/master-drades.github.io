@@ -1,7 +1,6 @@
-```javascript
 const DB_MATERIALES = {
-  PLA: 0.022,
-  PETG: 0.022,
+    "PLA": 0.022,
+    "PETG": 0.022,
   TPU: 0.1,
   SEDA: 0.09,
 };
