@@ -10,8 +10,8 @@ const CONFIG = {
     margenBeneficio: 0.50, // 50% de margen (multiplicador 1.5)
     costeHora: 0.15,       // Luz + amortización
     preciosSetup: {
-        pequena: 1.00,     // < 50g
-        mediana: 2.50,     // 50g - 250g
+        pequena: 1.50,     // < 50g
+        mediana: 3.50,     // 50g - 250g
         grande: 5.00       // > 250g
     },
     penalizacionColor: 1.50 // Por cada color extra (a partir del segundo)
@@ -48,7 +48,8 @@ function calcularPrecio3D(gramos, horas, tipoMat = "PLA", esComplejo = false, co
 
     return {
         precioSugerido: precioFinal.toFixed(2),
-        costeProduccion: subtotalProduccion.toFixed(2),
+        costeReal: subtotalProduccion.toFixed(2),
+        costeProduccion: costeConRiesgo.toFixed(2),
         material: costeMaterial.toFixed(2),
         maquina: costeMaquina.toFixed(2),
         setup: setupReal.toFixed(2),
@@ -62,6 +63,7 @@ function calcularPrecio3D(gramos, horas, tipoMat = "PLA", esComplejo = false, co
 const inputs = ["gramos", "horas", "material", "colores", "esComplejo", "costeDiseno"];
 const outputs = {
     precioFinal: document.getElementById("precioFinal"),
+    costeReal: document.getElementById("costeReal"),
     costeProduccion: document.getElementById("costeProduccion"),
     desgloseMaterial: document.getElementById("desgloseMaterial"),
     desgloseMaquina: document.getElementById("desgloseMaquina"),
@@ -84,6 +86,7 @@ function updateCalculations() {
 
     // Update DOM
     outputs.precioFinal.textContent = `${results.precioSugerido}€`;
+    outputs.costeReal.textContent = `${results.costeReal}€`;
     outputs.costeProduccion.textContent = `${results.costeProduccion}€`;
     outputs.desgloseMaterial.textContent = `${results.material}€`;
     outputs.desgloseMaquina.textContent = `${results.maquina}€`;
