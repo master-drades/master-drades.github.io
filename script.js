@@ -28,7 +28,7 @@ const CONFIG = {
 /**
  * Calculadora de Presupuesto Impresión 3D Refinada
  */
-function calcularPrecio3D(gramos, horas, tipoMat = "PLA", esComplejo = false, costeDiseno = 0, colores = 1) {
+function calcularPrecio3D(gramos, horas, tipoMat = "PLA", esComplejo = false, costeDiseno = 0, colores = 1, redondear = true) {
     // 1. Cálculo de Coste de Producción Directo
     const precioGramo = DB_MATERIALES[tipoMat] || 0.022;
     const costeMaterial = gramos * precioGramo;
@@ -62,13 +62,22 @@ function calcularPrecio3D(gramos, horas, tipoMat = "PLA", esComplejo = false, co
 
     // 4. Cálculo de la Base Imponible (cubriendo comisiones)
     const totalComision = CONFIG.comisionWeb + CONFIG.comisionArte;
-    const baseImponible = precioAntesDeComision / (1 - totalComision);
+    let baseImponible = precioAntesDeComision / (1 - totalComision);
 
-    // 5. Cálculo de Impuestos
+    // 5. Cálculo de PVP provisional y Redondeo
+    let pvp = baseImponible * (1 + CONFIG.iva);
+
+    // 6. Redondeo de Marketing (si está activo)
+    if (redondear) {
+        pvp = Math.ceil(pvp * 2) / 2;
+        // Recalcular Base Imponible para mantener consistencia (PVP = Base + IVA)
+        baseImponible = pvp / (1 + CONFIG.iva);
+    }
+
+    // 7. Recálculo de desgloses finales
     const cantidadIva = baseImponible * CONFIG.iva;
     const cantidadIrpf = baseImponible * CONFIG.irpf;
-    const pvp = baseImponible + cantidadIva;
-
+    
     return {
         pvp: pvp.toFixed(2),
         baseImponible: baseImponible.toFixed(2),
@@ -89,7 +98,7 @@ function calcularPrecio3D(gramos, horas, tipoMat = "PLA", esComplejo = false, co
 }
 
 // UI Interactions
-const inputs = ["gramos", "horas", "material", "colores", "esComplejo", "costeDiseno"];
+const inputs = ["gramos", "horas", "material", "colores", "esComplejo", "costeDiseno", "redondear"];
 const outputs = {
     precioFinal: document.getElementById("precioFinal"),
     baseImponible: document.getElementById("baseImponible"),
@@ -114,6 +123,7 @@ function updateCalculations() {
     const colores = parseInt(document.getElementById("colores").value) || 1;
     const esComplejo = document.getElementById("esComplejo").checked;
     const costeDiseno = parseFloat(document.getElementById("costeDiseno").value) || 0;
+    const redondear = document.getElementById("redondear").checked;
 
     // Update complexity label
     document.getElementById("complejidad-label").textContent = esComplejo ? "Pieza Compleja" : "Pieza Estándar";
@@ -121,7 +131,7 @@ function updateCalculations() {
     // Toggle risk row visibility
     outputs.rowRiesgo.style.display = esComplejo ? "flex" : "none";
 
-    const results = calcularPrecio3D(gramos, horas, material, esComplejo, costeDiseno, colores);
+    const results = calcularPrecio3D(gramos, horas, material, esComplejo, costeDiseno, colores, redondear);
 
     // Update DOM
     outputs.precioFinal.textContent = `${results.pvp}€`; // Large main price is now PVP
