@@ -28,17 +28,36 @@
             <span class="unit">gramos</span>
           </div>
           <div class="price-table">
-            <div class="price-row"><span>&lt; 50g:</span> <span>1.00€</span></div>
-            <div class="price-row"><span>50g - 250g:</span> <span>2.50€</span></div>
-            <div class="price-row"><span>&gt; 250g:</span> <span>5.00€</span></div>
+            <div class="price-row">
+              <span>&lt; 50g:</span> <span>1.00€</span>
+            </div>
+            <div class="price-row">
+              <span>50g - 250g:</span> <span>2.50€</span>
+            </div>
+            <div class="price-row">
+              <span>&gt; 250g:</span> <span>5.00€</span>
+            </div>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="horas">Tiempo Estimado (Slicer)</label>
-          <div class="input-wrapper">
-            <input type="number" id="horas" value="1.5" min="0.1" step="0.1" />
-            <span class="unit">horas</span>
+          <label>Tiempo Estimado (Slicer)</label>
+          <div class="time-inputs-container" style="display: flex; gap: 12px">
+            <div class="input-wrapper" style="flex: 1">
+              <input type="number" id="horas" value="1" min="0" step="1" />
+              <span class="unit">h</span>
+            </div>
+            <div class="input-wrapper" style="flex: 1">
+              <input
+                type="number"
+                id="minutos"
+                value="30"
+                min="0"
+                max="59"
+                step="1"
+              />
+              <span class="unit">m</span>
+            </div>
           </div>
         </div>
 
@@ -53,11 +72,11 @@
         </div>
 
         <div class="form-group">
-            <label for="colores">Número de Colores</label>
-            <div class="input-wrapper">
-                <input type="number" id="colores" value="1" min="1" max="4">
-                <span class="unit">colores</span>
-            </div>
+          <label for="colores">Número de Colores</label>
+          <div class="input-wrapper">
+            <input type="number" id="colores" value="1" min="1" max="4" />
+            <span class="unit">colores</span>
+          </div>
         </div>
 
         <div class="form-group">
@@ -81,8 +100,6 @@
             </label>
           </div>
         </div>
-
-
 
         <div class="form-group">
           <label for="costeDiseno">Coste Adicional Diseño / Modelado</label>
@@ -112,7 +129,7 @@
             <span class="label">IRPF (20%)</span>
             <span class="val" id="irpf">0.00€</span>
           </div>
-          <hr style="opacity: 0.1; margin: 16px 0;">
+          <hr style="opacity: 0.1; margin: 16px 0" />
           <div class="desglose-item">
             <span class="label" id="precioBaseLabel">Precio Base</span>
             <span class="val" id="precioBaseVal">0.00€</span>
@@ -125,12 +142,16 @@
             <span class="label">Energía y Desgaste</span>
             <span class="val" id="desgloseMaquina">0.00€</span>
           </div>
-          <hr style="opacity: 0.1; margin: 8px 0;">
+          <hr style="opacity: 0.1; margin: 8px 0" />
           <div class="desglose-item">
-            <span class="label" style="font-weight: 600;">Subtotal Coste Real</span>
-            <span class="val" id="costeReal" style="font-weight: 700;">0.00€</span>
+            <span class="label" style="font-weight: 600"
+              >Subtotal Coste Real</span
+            >
+            <span class="val" id="costeReal" style="font-weight: 700"
+              >0.00€</span
+            >
           </div>
-          <div class="desglose-item" id="row-riesgo" style="display: none;">
+          <div class="desglose-item" id="row-riesgo" style="display: none">
             <span class="label">Plus Riesgo (+25%)</span>
             <span class="val" id="plusRiesgo">0.00€</span>
           </div>
@@ -141,6 +162,10 @@
           <div class="desglose-item">
             <span class="label">Comisión Arte (5%)</span>
             <span class="val" id="comisionArte">0.00€</span>
+          </div>
+          <div class="desglose-item" id="row-diseno">
+            <span class="label">Diseño / Modelado</span>
+            <span class="val" id="desgloseDiseno">0.00€</span>
           </div>
           <div class="desglose-item margin">
             <span class="label">Margen Bruto Estimado</span>
