@@ -27,6 +27,11 @@
             <input type="number" id="gramos" value="10" min="1" step="0.1" />
             <span class="unit">gramos</span>
           </div>
+          <div class="price-table">
+            <div class="price-row"><span>&lt; 50g:</span> <span>1.00€</span></div>
+            <div class="price-row"><span>50g - 250g:</span> <span>2.50€</span></div>
+            <div class="price-row"><span>&gt; 250g:</span> <span>5.00€</span></div>
+          </div>
         </div>
 
         <div class="form-group">
@@ -66,6 +71,8 @@
           </div>
         </div>
 
+
+
         <div class="form-group">
           <label for="costeDiseno">Coste Adicional Diseño / Modelado</label>
           <div class="input-wrapper">
@@ -77,18 +84,27 @@
 
       <section class="results-section">
         <div class="price-main">
-          <span class="label">Precio Sugerido Final</span>
+          <span class="label">Precio Final (PVP)</span>
           <span class="value" id="precioFinal">0.00€</span>
         </div>
 
         <div class="desglose">
           <div class="desglose-item">
-            <span class="label">Coste Real (Sin márgenes)</span>
-            <span class="val" id="costeReal">0.00€</span>
+            <span class="label">Base Imponible</span>
+            <span class="val" id="baseImponible">0.00€</span>
           </div>
           <div class="desglose-item">
-            <span class="label">Coste de Producción (Riesgo)</span>
-            <span class="val" id="costeProduccion">0.00€</span>
+            <span class="label">IVA (21%)</span>
+            <span class="val" id="iva">0.00€</span>
+          </div>
+          <div class="desglose-item">
+            <span class="label">IRPF (20%)</span>
+            <span class="val" id="irpf">0.00€</span>
+          </div>
+          <hr style="opacity: 0.1; margin: 16px 0;">
+          <div class="desglose-item">
+            <span class="label" id="precioBaseLabel">Precio Base</span>
+            <span class="val" id="precioBaseVal">0.00€</span>
           </div>
           <div class="desglose-item">
             <span class="label">Material</span>
@@ -98,9 +114,22 @@
             <span class="label">Energía y Desgaste</span>
             <span class="val" id="desgloseMaquina">0.00€</span>
           </div>
+          <hr style="opacity: 0.1; margin: 8px 0;">
+          <div class="desglose-item">
+            <span class="label" style="font-weight: 600;">Subtotal Coste Real</span>
+            <span class="val" id="costeReal" style="font-weight: 700;">0.00€</span>
+          </div>
+          <div class="desglose-item" id="row-riesgo" style="display: none;">
+            <span class="label">Plus Riesgo (+25%)</span>
+            <span class="val" id="plusRiesgo">0.00€</span>
+          </div>
           <div class="desglose-item">
             <span class="label">Comisión Web (10%)</span>
             <span class="val" id="comisionWeb">0.00€</span>
+          </div>
+          <div class="desglose-item">
+            <span class="label">Comisión Arte (5%)</span>
+            <span class="val" id="comisionArte">0.00€</span>
           </div>
           <div class="desglose-item margin">
             <span class="label">Margen Bruto Estimado</span>

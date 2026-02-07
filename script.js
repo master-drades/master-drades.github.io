@@ -7,11 +7,19 @@ const DB_MATERIALES = {
 
 const CONFIG = {
     comisionWeb: 0.10,
+    comisionArte: 0.05,
+    iva: 0.21,
+    irpf: 0.20,
     margenBeneficio: 0.50, // 50% de margen (multiplicador 1.5)
     costeHora: 0.15,       // Luz + amortización
+    // preciosSetup: {
+    //     pequena: 0.00,     // < 50g
+    //     mediana: 0.00,     // 50g - 250g
+    //     grande: 0.00       // > 250g
+    // },
     preciosSetup: {
-        pequena: 1.50,     // < 50g
-        mediana: 3.50,     // 50g - 250g
+        pequena: 1.00,     // < 50g
+        mediana: 2.50,     // 50g - 250g
         grande: 5.00       // > 250g
     },
     penalizacionColor: 1.50 // Por cada color extra (a partir del segundo)
@@ -28,8 +36,16 @@ function calcularPrecio3D(gramos, horas, tipoMat = "PLA", esComplejo = false, co
     
     // Setup dinámico según peso
     let setupReal = CONFIG.preciosSetup.pequena;
-    if (gramos >= 50 && gramos <= 250) setupReal = CONFIG.preciosSetup.mediana;
-    if (gramos > 250) setupReal = CONFIG.preciosSetup.grande;
+    let setupLabel = "Pequeña";
+
+    if (gramos >= 50 && gramos <= 250) {
+        setupReal = CONFIG.preciosSetup.mediana;
+        setupLabel = "Mediana";
+    }
+    if (gramos > 250) {
+        setupReal = CONFIG.preciosSetup.grande;
+        setupLabel = "Grande";
+    }
     
     // Penalización por purgas multicolor
     const penalizacionMulticolor = (colores > 1) ? (colores - 1) * CONFIG.penalizacionColor : 0;
@@ -37,25 +53,38 @@ function calcularPrecio3D(gramos, horas, tipoMat = "PLA", esComplejo = false, co
     const subtotalProduccion = setupReal + penalizacionMulticolor + costeMaterial + costeMaquina;
 
     // 2. Aplicación de Factor de Riesgo
-    const riesgoFactor = esComplejo ? 1.25 : 1.15;
+    const riesgoFactor = esComplejo ? 1.25 : 1.0;
     const costeConRiesgo = subtotalProduccion * riesgoFactor;
+    const plusRiesgo = costeConRiesgo - subtotalProduccion;
 
     // 3. Aplicación de Margen de Beneficio y Servicio de Diseño
     const precioAntesDeComision = costeConRiesgo * (1 + CONFIG.margenBeneficio) + costeDiseno;
 
-    // 4. Cálculo del Precio Final para cubrir la Comisión del 10%
-    const precioFinal = precioAntesDeComision / (1 - CONFIG.comisionWeb);
+    // 4. Cálculo de la Base Imponible (cubriendo comisiones)
+    const totalComision = CONFIG.comisionWeb + CONFIG.comisionArte;
+    const baseImponible = precioAntesDeComision / (1 - totalComision);
+
+    // 5. Cálculo de Impuestos
+    const cantidadIva = baseImponible * CONFIG.iva;
+    const cantidadIrpf = baseImponible * CONFIG.irpf;
+    const pvp = baseImponible + cantidadIva;
 
     return {
-        precioSugerido: precioFinal.toFixed(2),
+        pvp: pvp.toFixed(2),
+        baseImponible: baseImponible.toFixed(2),
         costeReal: subtotalProduccion.toFixed(2),
+        plusRiesgo: plusRiesgo.toFixed(2),
         costeProduccion: costeConRiesgo.toFixed(2),
         material: costeMaterial.toFixed(2),
         maquina: costeMaquina.toFixed(2),
         setup: setupReal.toFixed(2),
+        setupLabel: setupLabel,
         purga: penalizacionMulticolor.toFixed(2),
-        comision: (precioFinal * CONFIG.comisionWeb).toFixed(2),
-        margenBruto: (precioFinal - subtotalProduccion - (precioFinal * CONFIG.comisionWeb)).toFixed(2)
+        comisionWeb: (baseImponible * CONFIG.comisionWeb).toFixed(2),
+        comisionArte: (baseImponible * CONFIG.comisionArte).toFixed(2),
+        iva: cantidadIva.toFixed(2),
+        irpf: cantidadIrpf.toFixed(2),
+        margenBruto: (baseImponible - subtotalProduccion - (baseImponible * totalComision)).toFixed(2)
     };
 }
 
@@ -63,12 +92,19 @@ function calcularPrecio3D(gramos, horas, tipoMat = "PLA", esComplejo = false, co
 const inputs = ["gramos", "horas", "material", "colores", "esComplejo", "costeDiseno"];
 const outputs = {
     precioFinal: document.getElementById("precioFinal"),
+    baseImponible: document.getElementById("baseImponible"),
+    iva: document.getElementById("iva"),
+    irpf: document.getElementById("irpf"),
     costeReal: document.getElementById("costeReal"),
-    costeProduccion: document.getElementById("costeProduccion"),
+    plusRiesgo: document.getElementById("plusRiesgo"),
     desgloseMaterial: document.getElementById("desgloseMaterial"),
     desgloseMaquina: document.getElementById("desgloseMaquina"),
     comisionWeb: document.getElementById("comisionWeb"),
+    comisionArte: document.getElementById("comisionArte"),
     margenBruto: document.getElementById("margenBruto"),
+    rowRiesgo: document.getElementById("row-riesgo"),
+    precioBaseLabel: document.getElementById("precioBaseLabel"),
+    precioBaseVal: document.getElementById("precioBaseVal"),
 };
 
 function updateCalculations() {
@@ -81,17 +117,28 @@ function updateCalculations() {
 
     // Update complexity label
     document.getElementById("complejidad-label").textContent = esComplejo ? "Pieza Compleja" : "Pieza Estándar";
+    
+    // Toggle risk row visibility
+    outputs.rowRiesgo.style.display = esComplejo ? "flex" : "none";
 
     const results = calcularPrecio3D(gramos, horas, material, esComplejo, costeDiseno, colores);
 
     // Update DOM
-    outputs.precioFinal.textContent = `${results.precioSugerido}€`;
+    outputs.precioFinal.textContent = `${results.pvp}€`; // Large main price is now PVP
+    outputs.baseImponible.textContent = `${results.baseImponible}€`;
+    outputs.iva.textContent = `${results.iva}€`;
+    outputs.irpf.textContent = `${results.irpf}€`;
     outputs.costeReal.textContent = `${results.costeReal}€`;
-    outputs.costeProduccion.textContent = `${results.costeProduccion}€`;
+    outputs.plusRiesgo.textContent = `${results.plusRiesgo}€`;
     outputs.desgloseMaterial.textContent = `${results.material}€`;
     outputs.desgloseMaquina.textContent = `${results.maquina}€`;
-    outputs.comisionWeb.textContent = `${results.comision}€`;
+    outputs.comisionWeb.textContent = `${results.comisionWeb}€`;
+    outputs.comisionArte.textContent = `${results.comisionArte}€`;
     outputs.margenBruto.textContent = `${results.margenBruto}€`;
+    
+    // New Setup Row
+    outputs.precioBaseLabel.textContent = `Precio Base (${results.setupLabel})`;
+    outputs.precioBaseVal.textContent = `${results.setup}€`;
 }
 
 // Add event listeners
