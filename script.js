@@ -55,7 +55,7 @@ function calcularPrecio3D(
     setupLabel = "Grande";
   }
 
-  // Penalización por purgas multicolor
+  // Penalización por purgas multicolor (1.5€ por cada color extra)
   const penalizacionMulticolor =
     colores > 1 ? (colores - 1) * CONFIG.penalizacionColor : 0;
 
